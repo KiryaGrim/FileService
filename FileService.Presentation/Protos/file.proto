@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+option csharp_namespace = "FileService.Presentation.Protos";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package file;
+
+service File {
+  rpc UploadFile (UploadFileRequest) returns (UploadFileResponse) {
+    option (google.api.http) = {
+      post: "/api/files"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse) {
+    option (google.api.http) = {
+      delete: "/api/files/{file_id}"
+    };
+  }
+  
+  rpc ReplaceFile (ReplaceFileRequest) returns (ReplaceFileResponse) {
+    option (google.api.http) = {
+      put: "/api/files/{file_id}"
+      body: "*"
+    };
+  }
+
+  rpc GetCourseFiles (GetCourseFilesRequest) returns (GetCourseFilesResponse) {
+    option (google.api.http) = {
+      get: "/api/courses/{course_id}/files"
+    };
+  }
+
+  rpc GetTaskFile (GetTaskFileRequest) returns (GetTaskFileResponse) {
+    option (google.api.http) = {
+        get: "/api/tasks/{task_id}/files/{intern_id}"
+    };
+}
+}
+
+message GetTaskFileRequest {
+  string task_id = 1;
+  string intern_id = 2;
+}
+
+message GetTaskFileResponse {
+  string file_id = 1;
+  string file_name = 2;
+  string file_url = 3;
+  string content_type = 4;
+}
+
+message UploadFileRequest {
+  string file_name = 1;       
+  string content_type = 2;    
+  bytes content = 3;          
+  string target_type = 4;
+  string target_id = 5; 
+  string uploaded_by_id = 6;
+}
+
+message UploadFileResponse {
+  string file_id = 1;         
+  string file_url = 2;        
+  bool success = 3;           
+}
+
+message DeleteFileRequest {
+  string file_id = 1;
+  string requested_by_id = 2; 
+}
+
+message DeleteFileResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message ReplaceFileRequest {
+  string file_id = 1;  
+  string new_file_name = 2;  
+  string content_type = 3;  
+  bytes new_content = 4;  
+  string requested_by_id = 5; 
+}
+
+message ReplaceFileResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message GetCourseFilesRequest {
+  string course_id = 1;
+}
+
+message FileItem {
+  string id = 1;
+  string file_name = 2;
+  string content_type = 3;
+  int64 size_bytes = 4;
+  string file_type = 5;
+  string uploaded_by_id = 6;
+}
+
+message GetCourseFilesResponse {
+  repeated FileItem files = 1;
+}
