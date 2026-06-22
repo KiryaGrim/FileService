@@ -31,13 +31,13 @@ service File {
 
   rpc GetCourseFiles (GetCourseFilesRequest) returns (GetCourseFilesResponse) {
     option (google.api.http) = {
-      get: "/api/courses/{course_id}/files"
+      get: "/api/files/{course_id}"
     };
   }
 
   rpc GetTaskFile (GetTaskFileRequest) returns (GetTaskFileResponse) {
     option (google.api.http) = {
-        get: "/api/tasks/{task_id}/files/{intern_id}"
+        get: "/api/files/{task_id}/{intern_id}"
     };
 }
 }

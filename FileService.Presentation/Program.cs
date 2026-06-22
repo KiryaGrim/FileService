@@ -14,6 +14,7 @@ using FileService.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using FileService.Application.Features.UploadFile;
+using Amazon.S3;
 
 namespace FileService.Presentation
 {
@@ -26,8 +27,21 @@ namespace FileService.Presentation
             builder.Services.AddDbContext<FileDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var config = new AmazonS3Config
+                {
+                    ServiceURL = "https://storage.yandexcloud.net"
+                };
+                return new AmazonS3Client(
+                    builder.Configuration["YandexStorage:AccessKey"],
+                    builder.Configuration["YandexStorage:SecretKey"],
+                    config);
+            });
+
             builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<FileDbContext>());
             builder.Services.AddScoped<IFileRepository, FileRepository>();
+            builder.Services.AddScoped<IFileStorage, YandexFileRepository>();
 
             var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
