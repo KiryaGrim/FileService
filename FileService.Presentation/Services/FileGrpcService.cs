@@ -31,17 +31,32 @@ namespace FileService.Presentation.Services
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Некорректный формат UploadedById."));
             }
 
+            if (!Guid.TryParse(request.CourseId, out var courseId))
+            {
+                throw new RpcException(new Status(StatusCode.InvalidArgument, $"Некорректный формат CourseId. Получено значение: '{request.CourseId}'"));
+            }
+
+            Guid? taskId = null;
+            if (request.TargetType == "TaskSolution")
+            {
+                if (!Guid.TryParse(request.TaskId, out var parsedTaskId))
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, $"Некорректный формат TaskId для типа TaskSolution. Получено значение: '{request.TaskId}'"));
+                }
+                taskId = parsedTaskId;
+            }
+
             var fileStream = new MemoryStream(request.Content.ToByteArray());
 
             var command = new UploadFileCommand(
-                CourseId: Guid.Parse(request.TargetId),
+                CourseId: Guid.Parse(request.CourseId),
                 FileName: request.FileName,
                 ContentType: request.ContentType,
                 SizeBytes: request.Content.Length,
                 FileType: request.TargetType,
                 FileStream: fileStream,
                 UploadedById: uploadedById,
-                TaskId: request.TargetType == "TaskSolution" ? Guid.Parse(request.TargetId) : null,
+                TaskId: taskId,
                 InternId: request.TargetType == "TaskSolution" ? uploadedById : null
             );
 

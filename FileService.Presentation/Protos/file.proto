@@ -55,12 +55,13 @@ message GetTaskFileResponse {
 }
 
 message UploadFileRequest {
-  string file_name = 1;       
-  string content_type = 2;    
-  bytes content = 3;          
+  string file_name = 1;
+  string content_type = 2;
+  bytes content = 3;
   string target_type = 4;
-  string target_id = 5; 
-  string uploaded_by_id = 6;
+  string course_id = 5;
+  string task_id = 6;
+  string uploaded_by_id = 7;
 }
 
 message UploadFileResponse {
