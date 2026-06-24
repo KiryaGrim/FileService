@@ -32,6 +32,19 @@ namespace FileService.Infrastructure.Persistence.Repositories
             await _s3Client.PutObjectAsync(request, ct);
         }
 
+        public async Task<Stream> GetStreamAsync(string storedName, CancellationToken ct)
+        {
+            var request = new GetObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = storedName
+            };
+
+            var response = await _s3Client.GetObjectAsync(request, ct);
+
+            return response.ResponseStream;
+        }
+
         public async Task DeleteAsync(string storedName, CancellationToken ct)
         {
             await _s3Client.DeleteObjectAsync(_bucketName, storedName, ct);

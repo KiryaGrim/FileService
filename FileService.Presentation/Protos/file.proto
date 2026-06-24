@@ -5,6 +5,7 @@ option csharp_namespace = "FileService.Presentation.Protos";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/httpbody.proto";
 
 package file;
 
@@ -13,6 +14,12 @@ service File {
     option (google.api.http) = {
       post: "/api/files"
       body: "*"
+    };
+  }
+
+  rpc DownloadFile (DownloadFileRequest) returns (google.api.HttpBody) {
+    option (google.api.http) = {
+      get: "/api/files/download/{id}"
     };
   }
   
@@ -39,7 +46,11 @@ service File {
     option (google.api.http) = {
         get: "/api/files/{task_id}/{intern_id}"
     };
+  }
 }
+
+message DownloadFileRequest {
+  string id = 1;
 }
 
 message GetTaskFileRequest {

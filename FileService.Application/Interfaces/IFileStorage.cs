@@ -10,5 +10,6 @@ namespace FileService.Application.Interfaces
     {
         Task SaveAsync(string storedName, Stream fileStream, string contentType, CancellationToken ct);
         Task DeleteAsync(string storedName, CancellationToken ct);
+        Task<Stream> GetStreamAsync(string storedName, CancellationToken ct);
     }
 }
